@@ -18,9 +18,9 @@ provider "google" {
 
 resource "google_storage_bucket" "static_website" {
   uniform_bucket_level_access = true
-  name          = "my-first-bucket-from-terraform-mdak-2026"
-  location      = "US"
-  force_destroy = true
+  name                        = "my-first-bucket-from-terraform-mdak-2026"
+  location                    = "US"
+  force_destroy               = true
 
   website {
     main_page_suffix = "index.html"
@@ -34,9 +34,9 @@ resource "google_storage_bucket" "static_website" {
 
 resource "google_storage_bucket" "devops_bucket" {
   uniform_bucket_level_access = true
-  name          = "mano-test-bucket-1-mdak-2026"
-  location      = "US"
-  force_destroy = true
+  name                        = "mano-test-bucket-1-mdak-2026"
+  location                    = "US"
+  force_destroy               = true
 
   website {
     main_page_suffix = "index.html"
@@ -46,9 +46,9 @@ resource "google_storage_bucket" "devops_bucket" {
 
 resource "google_storage_bucket" "delete_later" {
   uniform_bucket_level_access = true
-  name          = "will-delete-later-mdak-2026"
-  location      = "US"
-  force_destroy = true
+  name                        = "will-delete-later-mdak-2026"
+  location                    = "US"
+  force_destroy               = true
 
   website {
     main_page_suffix = "index.html"
@@ -58,9 +58,9 @@ resource "google_storage_bucket" "delete_later" {
 
 resource "google_storage_bucket" "devops_bucket_1" {
   uniform_bucket_level_access = true
-  name          = "mano-test-bucket1234-mdak-2026"
-  location      = "US"
-  force_destroy = true
+  name                        = "mano-test-bucket1234-mdak-2026"
+  location                    = "US"
+  force_destroy               = true
 
   labels = {
     env     = "dev"
@@ -78,9 +78,9 @@ resource "google_storage_bucket" "devops_bucket_1" {
 # ---------------------------
 
 resource "google_storage_bucket_object" "mano_folder" {
-  name   = "Mano/dakshin/"   # GCS treats this as a folder prefix
-  bucket = google_storage_bucket.devops_bucket_1.name
-  content = "folder-marker"               # GCS requires content for objects
+  name    = "Mano/dakshin/" # GCS treats this as a folder prefix
+  bucket  = google_storage_bucket.devops_bucket_1.name
+  content = "folder-marker" # GCS requires content for objects
 }
 
 # ---------------------------
