@@ -1,70 +1,109 @@
-provider "aws" {
-  region = "us-east-1" 
-}
-
-resource "aws_s3_bucket" "static_website" {
-  bucket = "my-first-bucket-from-terraform"
-  website {
-    index_document = "index.html"
-    error_document = "error.html"
+terraform {
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 5.0"
+    }
   }
 }
 
-resource "aws_s3_bucket_versioning" "versioning_example" {
-  bucket = "my-first-bucket-from-terraform"
-  versioning_configuration {
-    status = "Enabled"
-  }
+provider "google" {
+  project = "project-bad2bf27-d410-468a-acf"
+  region  = "us-east1"
 }
 
-resource "aws_s3_bucket" "devops_bucket" {
-  bucket = "mano-test-bucket-1"
+# ---------------------------
+# GCS Buckets (S3 equivalents)
+# ---------------------------
+
+resource "google_storage_bucket" "static_website" {
+  uniform_bucket_level_access = true
+  name          = "my-first-bucket-from-terraform-mdak-2026"
+  location      = "US"
   force_destroy = true
+
   website {
-    index_document = "index.html"
-    error_document = "error.html"
+    main_page_suffix = "index.html"
+    not_found_page   = "error.html"
+  }
+
+  versioning {
+    enabled = true
   }
 }
 
-resource "aws_s3_bucket" "delete-later" {
-  bucket = "will-delete-later"
+resource "google_storage_bucket" "devops_bucket" {
+  uniform_bucket_level_access = true
+  name          = "mano-test-bucket-1-mdak-2026"
+  location      = "US"
   force_destroy = true
+
   website {
-    index_document = "index.html"
-    error_document = "error.html"
+    main_page_suffix = "index.html"
+    not_found_page   = "error.html"
   }
 }
 
+resource "google_storage_bucket" "delete_later" {
+  uniform_bucket_level_access = true
+  name          = "will-delete-later-mdak-2026"
+  location      = "US"
+  force_destroy = true
 
-resource "aws_s3_bucket" "devops_bucket_1" {
-  bucket = "mano-test-bucket1234"
-  tags = {
-      Env = "dev"
-      Service = "s3"
-      Team = "devops"
+  website {
+    main_page_suffix = "index.html"
+    not_found_page   = "error.html"
   }
 }
 
-resource "aws_s3_bucket_versioning" "versioning_cf" {
-  bucket = "mano-test-bucket1234"
-  versioning_configuration {
-    status = "Enabled"
+resource "google_storage_bucket" "devops_bucket_1" {
+  uniform_bucket_level_access = true
+  name          = "mano-test-bucket1234-mdak-2026"
+  location      = "US"
+  force_destroy = true
+
+  labels = {
+    env     = "dev"
+    service = "s3"
+    team    = "devops"
+  }
+
+  versioning {
+    enabled = true
   }
 }
 
+# ---------------------------
+# GCS Object (folder creation)
+# ---------------------------
 
-resource "aws_s3_object" "Mano_folder" {
-  bucket = aws_s3_bucket.devops_bucket_1.id
-  key    = "Mano/dakshin/"
+resource "google_storage_bucket_object" "mano_folder" {
+  name   = "Mano/dakshin/"   # GCS treats this as a folder prefix
+  bucket = google_storage_bucket.devops_bucket_1.name
+  content = "folder-marker"               # GCS requires content for objects
 }
 
+# ---------------------------
+# Compute Engine VM (EC2 equivalent)
+# ---------------------------
 
-resource "aws_instance" "example_ec2_instance" {
-  ami = "ami-0faac27e2fc42cead"
-  instance_type = "t2.micro"
-  count         = 1
+resource "google_compute_instance" "example_vm" {
+  name         = "mdak-instance"
+  machine_type = "e2-micro"
+  zone         = "us-east1-b"
 
-  tags = {
-    Name = "MDak"
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-12"
+    }
+  }
+
+  network_interface {
+    network = "default"
+    access_config {}
+  }
+
+  labels = {
+    name = "mdak"
   }
 }
